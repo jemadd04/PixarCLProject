@@ -68,7 +68,7 @@ namespace PixarTheater
             Console.WriteLine("4. Display Previous Pixar Movie That Was Watched");
             Console.Write(Environment.NewLine);
             Console.WriteLine("5. Quit");
-            Console.WriteLine("This is a test");
+            Console.WriteLine("This is a test"); 
 
             Console.ReadLine();
             Console.Write(Environment.NewLine);
