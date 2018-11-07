@@ -1,0 +1,7 @@
+C:\Users\james\Desktop\PixarTheater\PixarTheater\bin\Debug\PixarTheater.exe.config
+C:\Users\james\Desktop\PixarTheater\PixarTheater\bin\Debug\PixarTheater.exe
+C:\Users\james\Desktop\PixarTheater\PixarTheater\bin\Debug\PixarTheater.pdb
+C:\Users\james\Desktop\PixarTheater\PixarTheater\obj\Debug\PixarTheater.csprojAssemblyReference.cache
+C:\Users\james\Desktop\PixarTheater\PixarTheater\obj\Debug\PixarTheater.csproj.CoreCompileInputs.cache
+C:\Users\james\Desktop\PixarTheater\PixarTheater\obj\Debug\PixarTheater.exe
+C:\Users\james\Desktop\PixarTheater\PixarTheater\obj\Debug\PixarTheater.pdb

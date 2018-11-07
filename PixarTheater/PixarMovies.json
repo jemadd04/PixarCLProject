@@ -1,0 +1,122 @@
+{
+  {
+    "Movie": "\"Toy Story',",
+    "Year": 1995,
+    "Rotten Tomatoes %": "100%",
+    "Total Gross": "$373,600,000"
+  },
+  {
+    "Movie": "A Bug's Life",
+    "Year": 1998,
+    "Rotten Tomatoes %": "92%",
+    "Total Gross": "$363,300,000"
+  },
+  {
+    "Movie": "Toy Story 2",
+    "Year": 1999,
+    "Rotten Tomatoes %": "100%",
+    "Total Gross": "$497,400,000"
+  },
+  {
+    "Movie": "Monsters, Inc.",
+    "Year": 2001,
+    "Rotten Tomatoes %": "96%",
+    "Total Gross": "$525,400,000"
+  },
+  {
+    "Movie": "Finding Nemo",
+    "Year": 2003,
+    "Rotten Tomatoes %": "99%",
+    "Total Gross": "$940,300,000"
+  },
+  {
+    "Movie": "The Incredibles",
+    "Year": 2004,
+    "Rotten Tomatoes %": "97%",
+    "Total Gross": "$633,000,000"
+  },
+  {
+    "Movie": "Cars",
+    "Year": 2006,
+    "Rotten Tomatoes %": "74%",
+    "Total Gross": "$462,200,000"
+  },
+  {
+    "Movie": "Ratatouille",
+    "Year": 2007,
+    "Rotten Tomatoes %": "96%",
+    "Total Gross": "$620,700,000"
+  },
+  {
+    "Movie": "WALL-E",
+    "Year": 2008,
+    "Rotten Tomatoes %": "96%",
+    "Total Gross": "$533,300,000"
+  },
+  {
+    "Movie": "Up",
+    "Year": 2009,
+    "Rotten Tomatoes %": "98%",
+    "Total Gross": "$735,100,000"
+  },
+  {
+    "Movie": "Toy Story 3",
+    "Year": 2010,
+    "Rotten Tomatoes %": "99%",
+    "Total Gross": "$1,067,000,000"
+  },
+  {
+    "Movie": "Cars 2",
+    "Year": 2011,
+    "Rotten Tomatoes %": "40%",
+    "Total Gross": "$562,100,000"
+  },
+  {
+    "Movie": "Brave",
+    "Year": 2012,
+    "Rotten Tomatoes %": "79%",
+    "Total Gross": "$540,400,000"
+  },
+  {
+    "Movie": "Monsters University",
+    "Year": 2013,
+    "Rotten Tomatoes %": "79%",
+    "Total Gross": "$744,200,000"
+  },
+  {
+    "Movie": "Inside Out",
+    "Year": 2015,
+    "Rotten Tomatoes %": "98%",
+    "Total Gross": "$857,600,000"
+  },
+  {
+    "Movie": "The Good Dinosaur",
+    "Year": 2015,
+    "Rotten Tomatoes %": "76%",
+    "Total Gross": "$332,200,000"
+  },
+  {
+    "Movie": "Finding Dory",
+    "Year": 2016,
+    "Rotten Tomatoes %": "94%",
+    "Total Gross": "$1,028,600"
+  },
+  {
+    "Movie": "Cars 3",
+    "Year": 2017,
+    "Rotten Tomatoes %": "68%",
+    "Total Gross": "$383,900,000"
+  },
+  {
+    "Movie": "Coco",
+    "Year": 2017,
+    "Rotten Tomatoes %": "97%",
+    "Total Gross": "$807,000,000"
+  },
+  {
+    "Movie": "Incredibles 2",
+    "Year": 2018,
+    "Rotten Tomatoes %": "94%",
+    "Total Gross": "$1,231,900,000"
+  }
+}
