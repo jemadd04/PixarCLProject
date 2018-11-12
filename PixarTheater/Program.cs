@@ -1,157 +1,313 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace PixarTheater
 {
     class Program
     {
-        // Name of the data file
-        private static string file;
-        private static bool readFile = false;
-
         static void Main(string[] args)
         {
-            Console.WriteLine("----------Welcome to PIXAR THEATER-----------");
-            Console.WriteLine("                   ____________          ");
-            Console.WriteLine("                  /            \\         ");
-            Console.WriteLine("                  |             |        ");
-            Console.WriteLine("               ___|             |        ");
-            Console.WriteLine("              /  /               \\       ");
-            Console.WriteLine("             /  /                 \\      ");
-            Console.WriteLine("            /|  |__________________|     ");
-            Console.WriteLine("           / |                           ");
-            Console.WriteLine("          / /                            ");
-            Console.WriteLine("         / /                             ");
-            Console.WriteLine("        / /                              ");
-            Console.WriteLine("       / /                               ");
-            Console.WriteLine("      | |                                ");
-            Console.WriteLine("      | |                                ");
-            Console.WriteLine("      | |                                ");
-            Console.WriteLine("      | |                                ");
-            Console.WriteLine("      | |            ________            ");
-            Console.WriteLine("      | |           /        \\           ");
-            Console.WriteLine("      | |          |          |          ");
-            Console.WriteLine("   ___| |___       |          |          ");
-            Console.WriteLine("  /         \\      \\          /          ");
-            Console.WriteLine(" |___________|      \\________/           ");
-            Console.WriteLine(Environment.NewLine);
-            Console.WriteLine("\t          Press enter to continue     ");
-            Console.ReadKey();
+            // Fun Pixar logo opening window
+            Console.WriteLine("\t----------Welcome to PIXAR THEATER-----------");
+            Console.WriteLine("\t                   ____________          ");
+            Console.WriteLine("\t                  /            \\         ");
+            Console.WriteLine("\t                  |             |        ");
+            Console.WriteLine("\t               ___|             |        ");
+            Console.WriteLine("\t              /  /               \\       ");
+            Console.WriteLine("\t             /  /                 \\      ");
+            Console.WriteLine("\t            /|  |__________________|     ");
+            Console.WriteLine("\t           / |                           ");
+            Console.WriteLine("\t          / /                            ");
+            Console.WriteLine("\t         / /                             ");
+            Console.WriteLine("\t        / /                              ");
+            Console.WriteLine("\t       / /                               ");
+            Console.WriteLine("\t      | |                                ");
+            Console.WriteLine("\t      | |                                ");
+            Console.WriteLine("\t      | |                                ");
+            Console.WriteLine("\t      | |                                ");
+            Console.WriteLine("\t      | |            ________            ");
+            Console.WriteLine("\t      | |           /        \\           ");
+            Console.WriteLine("\t      | |          |          |          ");
+            Console.WriteLine("\t   ___| |___       |          |          ");
+            Console.WriteLine("\t  /         \\      \\          /          ");
+            Console.WriteLine("\t |___________|      \\________/           ");
+
+            Console.Write(Environment.NewLine);
+
+            //Prompts user for name
+            Console.Write("\tPlease type your name and press <Enter> to continue: ");
+            var userName = Console.ReadLine();
+            // Validation - ensures name is typed in
+            while (string.IsNullOrEmpty(userName))
+            {
+                Console.WriteLine("\tName can't be empty. Please enter your name.");
+                userName = Console.ReadLine();
+            }
+            
 
             // Clear screen 
             Console.Clear();
 
-            Console.WriteLine("Previous visit to P|I|X|A|R Theater");
-            string path = "./PixarMovieChoice.txt";
-            if (!File.Exists(path))
+            // While loop is here so that if one of the options are chosen they can easily go back to the main menu by hitting enter unless otherwise noted with a break
+            while (true)
             {
-                // Create a file to write to
-                string createText = "You haven't watched a movie at P|I|X|A|R yet." + Environment.NewLine;
-                File.WriteAllText(path, createText);
-                Console.WriteLine(createText);
-            }
-            else
-            {
-                string text = File.ReadAllText("./PixarMovieChoice.txt");
-                Console.WriteLine(text);
+                Console.WriteLine("\tWelcome " + userName);
                 Console.Write(Environment.NewLine);
-            }
+                Console.WriteLine("\t1. Choose a Pixar Movie");
+                Console.WriteLine("\t2. Display List of Pixar Movies Sorted by Box Office Gross");
+                Console.WriteLine("\t3. Display List of Pixar Movies Sorted by Rotten Tomatoes Score");
+                Console.WriteLine("\t4. Display Previous Pixar Movie That Was Watched");
+                Console.Write(Environment.NewLine);
+                Console.WriteLine("\t5. Quit");
 
-            Console.WriteLine("Please choose a menu item below:");
-            Console.WriteLine("1. Choose a Pixar Movie");
-            Console.WriteLine("2. Display List of Pixar Movies by Box Office Gross");
-            Console.WriteLine("3. Display List of Pixar Movies by Rotten Tomatoes Score");
-            Console.WriteLine("4. Display Previous Pixar Movie That Was Watched");
-            Console.Write(Environment.NewLine);
-            Console.WriteLine("5. Quit");
-            Console.WriteLine("This is a test"); 
+                Console.Write(Environment.NewLine);
 
-            Console.ReadLine();
-            Console.Write(Environment.NewLine);
-            Console.Clear();
+                // Prompt for menu selection and logged in getOption string
+                Console.Write("\tPlease choose a menu item below: ");
+                string getOption = Console.ReadLine();
+                Console.Clear();
 
-            string getOption = Console.ReadLine();
-            if (int.TryParse(getOption, out int option))
+                //If clause as opposed to switch 
+                if (int.TryParse(getOption, out int option))
+                {
+                    // Option 1- Display all Pixar movies and choose one to watch
+                    if (option == 1)
+                    {
+                        string currentDirectory = Directory.GetCurrentDirectory();
+                        DirectoryInfo directory = new DirectoryInfo(currentDirectory);
+                        var fileName = Path.Combine(directory.FullName, "PixarMovies.csv");
+                        var fileContents = ReadMovieList(fileName);
+                        fileName = Path.Combine(directory.FullName, "PixarMovies.json");
+                        var movies = DeserializeMovies(fileName);
+
+                        foreach (var movie in movies)
+                        {
+                            Console.WriteLine(movie.Title);
+                        }
+
+                        Console.Write(Environment.NewLine);
+                        // Prompts user to enter desired movie to watch and logged into variable selectedMovie
+                        Console.Write("Please choose a movie to watch from the list above: ");
+                        Console.Write(Environment.NewLine);
+
+                        bool nullAnswer = true;
+                        while (nullAnswer)
+                        {
+                            string selectedMovie = Console.ReadLine();
+                            Console.Write(Environment.NewLine);
+
+                            var movieAnswer = movies.FirstOrDefault(r => string.Equals(r.Title, selectedMovie, StringComparison.InvariantCultureIgnoreCase));
+                            if (movieAnswer == null)
+                            {
+                                Console.WriteLine("That is an invalid option. Please select a movie from the list.");
+                                continue;
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                Console.WriteLine(userName + ", you have chosen to watch " + movieAnswer.Title + ". This movie came out in " + movieAnswer.Year + " and grossed " + movieAnswer.BoxOfficeGross + " at the box office!");
+                                Console.WriteLine("Also, it ended up with a Rotten Tomatoes Score of " + movieAnswer.RTScore + "%.");
+                                Console.WriteLine(Environment.NewLine);
+                                Console.WriteLine("We hope you enjoy your movie " + userName + " and please come back to visit soon. Enjoy the show!");
+                                Console.WriteLine("Press <Enter> to leave the theater");
+                                
+                            }
+
+                            
+
+                            Console.ReadLine();
+                            nullAnswer = false;
+                            Console.Write(Environment.NewLine);
+
+                        }
+
+                        break;
+
+                    }
+                    //Option 2 - Lists all Pixar movies by box office gross, highest to lowest
+                    else if (option == 2)
+                    {
+                        GetBoxOfficeGross();
+                    }
+                    //Option 3 - Lists all Pixar movies by Rotten Tomatoes score, highest to lowest
+                    else if (option == 3)
+                    {
+                        GetRTScoreData();
+                    }
+                    //Option 4 - Displays saved data that is written to file
+                    //else if (option == 4)
+                    //{
+                    //    Console.WriteLine("Here is a list of recent theater visitors:");
+                    //    string path = "./GuestBook.txt";
+                    //    if (!File.Exists(path))
+                    //    {
+                    //        string createText = "No recent visitors." + Environment.NewLine;
+                    //        File.WriteAllText(path, createText);
+                    //        Console.WriteLine(createText);
+                    //    }
+                    //    else
+                    //    {
+                    //        string text = File.ReadAllText("./GuestBook.txt");
+                    //        Console.WriteLine(text);
+                    //        Console.Write(Environment.NewLine);
+                    //    }
+
+                    //    Console.ReadLine();
+                    //}
+                    //Exits the program
+                    else if (option == 5)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.Write("That is not a valid option. Please choose between options 1 through 5.");
+                    }
+                }
+            } //end of While loop
+        } //end of Main
+
+        //Methods
+        public static List<MovieData> ReadMovieList(string fileName)
+        {
+            var movieList = new List<MovieData>();
+            using (var reader = new StreamReader(fileName))
             {
-                if (option == 1)
+                string line = "";
+                reader.ReadLine(); // throw away header line
+                while((line = reader.ReadLine()) != null)
                 {
-                    // Display list of Pixar movies from JSON file
-                    Console.WriteLine("Please choose which Pixar movie you would like to watch: ");
-                    var movieChoice = Console.ReadLine();
-                    Console.WriteLine("Success");
-                }
-                else if (option == 2)
-                {
-                    Console.WriteLine("Pixar Movies Sorted by Box Office Gross Highest to Lowest");
-                    DisplayGross(fileContents);
-                }
-                else if (option == 3)
-                {
-                    Console.WriteLine("Pixar Movies Sorted by Rotten Tomatoes Score");
-                    DisplayScore(fileContents);
-                }
-                else if (option == 4)
-                {
-                    Console.WriteLine("The previous movie watched at Pixar Theater was ");
-                }
-                else if (option == 5)
-                {
-                    // Exit program
-                }
-                else
-                {
-                    Console.WriteLine("You must select an option between 1 and 4.");
+                    var movieData = new MovieData();
+                    string[] values = line.Split(',');
+                    movieData.Title = values[0];
+                    int parseInt;
+                    if (int.TryParse(values[1], out parseInt))
+                    {
+                        movieData.Year = parseInt;
+                    }
+                    if (int.TryParse(values[2], out parseInt))
+                    {
+                        movieData.RTScore = parseInt;
+                    }
+                    if (int.TryParse(values[3], out parseInt))
+                    {
+                        movieData.BoxOfficeGross = parseInt;
+                    }
+                    movieList.Add(movieData);
                 }
             }
-        }
-            // End of menu
-            // get the filename folders
-            public static string getFileName(string fileName)
-            {
-                string currentDirectory = Directory.GetCurrentDirectory();
-                DirectoryInfo directory = new DirectoryInfo(currentDirectory);
-                // set path and file name and return it
-                return Path.Combine(directory.FullName, file);
-            }
+            return movieList;
+        } //End of ReadMovieList()
 
-        public static void displayFileName()
+        public static List<MovieData> DeserializeMovies(string fileName)
+        {
+            var movies = new List<MovieData>();
+            var serializer = new JsonSerializer();
+            using (var reader = new StreamReader(fileName))
+            using (var jsonReader = new JsonTextReader(reader))
+            {
+                movies = serializer.Deserialize<List<MovieData>>(jsonReader);
+            }
+                
+            return movies;
+        } //End of DeserializeMovies()
+
+        //public static void SerializeMoviesToFile(List<MovieData> movies, string fileName)
+        //{
+        //    var serializer = new JsonSerializer();
+        //    using (var writer = new StreamWriter(fileName))
+        //    using (var jsonWriter = new JsonTextWriter(writer))
+        //    {
+        //        serializer.Serialize(jsonWriter, movies);
+        //    }
+        //}
+
+        static void GetBoxOfficeGross()
         {
             string currentDirectory = Directory.GetCurrentDirectory();
             DirectoryInfo directory = new DirectoryInfo(currentDirectory);
-            string[] entries = Directory.GetFileSystemEntries(directory.FullName, "*.*");
-            int number = 1;
-            for (int i = 0; i < entries.Length; i++)
+            var fileName = Path.Combine(directory.FullName, "PixarMovies.csv");
+            var fileContents = ReadMovieList(fileName);
+            fileName = Path.Combine(directory.FullName, "PixarMovies.json");
+            var movies = DeserializeMovies(fileName);
+
+            var topGrossingMovies = GetTopGrossing(movies);
+            foreach (var movie in topGrossingMovies)
             {
-                if (entries[i].Contains(".txt") || entries[i].Contains(".csv"))
-                {
-                    Console.WriteLine("\t {0}. " + entries[i], number);
-                    number++;
-                }
+                Console.WriteLine(movie.Title + " | Box Office Gross: " + movie.BoxOfficeGross);
             }
+
+            Console.ReadLine();
+            Console.WriteLine("Please press <Enter> to return to the Main Menu");
+
+            Console.Clear();
+        } //End of GetBoxOfficeGross()
+
+        static void GetRTScoreData()
+        {
+            string currentDirectory = Directory.GetCurrentDirectory();
+            DirectoryInfo directory = new DirectoryInfo(currentDirectory);
+            var fileName = Path.Combine(directory.FullName, "PixarMovies.csv");
+            var fileContents = ReadMovieList(fileName);
+            fileName = Path.Combine(directory.FullName, "PixarMovies.json");
+            var movies = DeserializeMovies(fileName);
+
+            var topScoreMovies = GetTopScore(movies);
+            foreach (var movie in topScoreMovies)
+            {
+                Console.WriteLine(movie.Title + " | Rotten Tomatoes Score: " + movie.RTScore);
+            }
+
+            Console.ReadLine();
+            Console.WriteLine("Please press <Enter> to return to the Main Menu");
+
+            Console.Clear();
+        } //End of GetRTScoreData()
+
+        public static List<MovieData> GetTopGrossing(List<MovieData> movies)
+        {
+            var topGrossingMovies = new List<MovieData>();
+            movies.Sort(new MovieComparer());
+            int counter = 0;
+            foreach(var movie in movies)
+            {
+                topGrossingMovies.Add(movie);
+                counter++;
+                if (counter == 20)
+                    break;
+            }
+            return topGrossingMovies;
         }
 
-        //read data from file
-        public static List<AllPixar> ReadData(string fileName)
+        public static List<MovieData> GetTopScore(List<MovieData> movies)
         {
-            //create a new object using AllPixar class
-            var totalGross = new List<AllPixar>();
-            // reading data from file
-            using (var sr = new StreamReader(fileName))
+            var topScoreMovies = new List<MovieData>();
+            movies.Sort(new ScoreComparer());
+            int counter = 0;
+            foreach (var movie in movies)
             {
-                //read header line to skip header line
-                sr.ReadLine();
-                string line;
-                //read data
-                while ((line=sr.ReadLine()) != null)
-                {
-                    //instantiate class allpixar
-                    var allPixar = new AllPixar();
-                }
+                topScoreMovies.Add(movie);
+                counter++;
+                if (counter == 20)
+                    break;
             }
-        }
+            return topScoreMovies;
+        } // End of GetTopGrossing()
+
     }
 }
+
+
+//// PROJECT GUIDELINES
+////1. Does project read from a dataset?
+////2. Does project have a class that models at least some of the data?
+////3. Does the above class have at least two instances, representing two seperate pieces of data?
+////4. Does project write to a database or file?
+////5. Is the user able to view or manipulate the data in any manner?
+////6. Does the project have comments?
+////7. Does the project have a README file on Github?
