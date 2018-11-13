@@ -48,7 +48,55 @@ namespace PixarTheater
                 Console.WriteLine("\tName can't be empty. Please enter your name.");
                 userName = Console.ReadLine();
             }
-            
+
+            Console.Clear();
+
+            string currentDirectory = Directory.GetCurrentDirectory();
+            DirectoryInfo directory = new DirectoryInfo(currentDirectory);
+            var fileName = Path.Combine(directory.FullName, "PixarMovies.csv");
+            var fileContents = ReadMovieList(fileName);
+            fileName = Path.Combine(directory.FullName, "PixarMovies.json");
+            var movies = DeserializeMovies(fileName);
+
+            foreach (var movie in movies)
+            {
+                Console.WriteLine(movie.Title);
+            }
+
+            Console.Write(Environment.NewLine);
+            // Prompts user to enter desired movie to watch and logged into variable selectedMovie
+            Console.Write($"Welcome {userName}! Please choose a movie to watch from the list above: ");
+            Console.Write(Environment.NewLine);
+
+            //bool nullAnswer = true;
+            //while (nullAnswer)
+            //{
+                var selectedMovie = Console.ReadLine();
+                Console.Write(Environment.NewLine);
+
+                var movieAnswer = movies.FirstOrDefault(r => string.Equals(r.Title, selectedMovie, StringComparison.InvariantCultureIgnoreCase));
+                if (movieAnswer == null)
+                {
+                    Console.WriteLine("That is an invalid option. Please select a movie from the list.");
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine(userName + ", you have chosen to watch " + movieAnswer.Title + ". This movie came out in " + movieAnswer.Year + " and grossed " + movieAnswer.BoxOfficeGross + " at the box office!");
+                    Console.WriteLine("Also, it ended up with a Rotten Tomatoes Score of " + movieAnswer.RTScore + "%.");
+                    Console.WriteLine(Environment.NewLine);
+                    Console.WriteLine("We hope you enjoy your movie " + userName + " and please come back to visit soon. Enjoy the show!");
+                    Console.WriteLine("Press <Enter> to enter the theater");
+
+                }
+
+
+
+                Console.ReadLine();
+                Console.Write(Environment.NewLine);
+
+            //}
+
 
             // Clear screen 
             Console.Clear();
@@ -58,7 +106,7 @@ namespace PixarTheater
             {
                 Console.WriteLine("\tWelcome " + userName);
                 Console.Write(Environment.NewLine);
-                Console.WriteLine("\t1. Choose a Pixar Movie");
+                Console.WriteLine("\t1. View List of Pixar Movies");
                 Console.WriteLine("\t2. Display List of Pixar Movies Sorted by Box Office Gross");
                 Console.WriteLine("\t3. Display List of Pixar Movies Sorted by Rotten Tomatoes Score");
                 Console.WriteLine("\t4. Display Previous Pixar Movie That Was Watched");
@@ -78,12 +126,6 @@ namespace PixarTheater
                     // Option 1- Display all Pixar movies and choose one to watch
                     if (option == 1)
                     {
-                        string currentDirectory = Directory.GetCurrentDirectory();
-                        DirectoryInfo directory = new DirectoryInfo(currentDirectory);
-                        var fileName = Path.Combine(directory.FullName, "PixarMovies.csv");
-                        var fileContents = ReadMovieList(fileName);
-                        fileName = Path.Combine(directory.FullName, "PixarMovies.json");
-                        var movies = DeserializeMovies(fileName);
 
                         foreach (var movie in movies)
                         {
@@ -91,42 +133,8 @@ namespace PixarTheater
                         }
 
                         Console.Write(Environment.NewLine);
-                        // Prompts user to enter desired movie to watch and logged into variable selectedMovie
-                        Console.Write("Please choose a movie to watch from the list above: ");
-                        Console.Write(Environment.NewLine);
-
-                        bool nullAnswer = true;
-                        while (nullAnswer)
-                        {
-                            string selectedMovie = Console.ReadLine();
-                            Console.Write(Environment.NewLine);
-
-                            var movieAnswer = movies.FirstOrDefault(r => string.Equals(r.Title, selectedMovie, StringComparison.InvariantCultureIgnoreCase));
-                            if (movieAnswer == null)
-                            {
-                                Console.WriteLine("That is an invalid option. Please select a movie from the list.");
-                                continue;
-                            }
-                            else
-                            {
-                                Console.Clear();
-                                Console.WriteLine(userName + ", you have chosen to watch " + movieAnswer.Title + ". This movie came out in " + movieAnswer.Year + " and grossed " + movieAnswer.BoxOfficeGross + " at the box office!");
-                                Console.WriteLine("Also, it ended up with a Rotten Tomatoes Score of " + movieAnswer.RTScore + "%.");
-                                Console.WriteLine(Environment.NewLine);
-                                Console.WriteLine("We hope you enjoy your movie " + userName + " and please come back to visit soon. Enjoy the show!");
-                                Console.WriteLine("Press <Enter> to leave the theater");
-                                
-                            }
-
-                            
-
-                            Console.ReadLine();
-                            nullAnswer = false;
-                            Console.Write(Environment.NewLine);
-
-                        }
-
-                        break;
+                        Console.ReadLine();
+                        Console.Clear();
 
                     }
                     //Option 2 - Lists all Pixar movies by box office gross, highest to lowest
@@ -140,25 +148,42 @@ namespace PixarTheater
                         GetRTScoreData();
                     }
                     //Option 4 - Displays saved data that is written to file
-                    //else if (option == 4)
-                    //{
-                    //    Console.WriteLine("Here is a list of recent theater visitors:");
-                    //    string path = "./GuestBook.txt";
-                    //    if (!File.Exists(path))
-                    //    {
-                    //        string createText = "No recent visitors." + Environment.NewLine;
-                    //        File.WriteAllText(path, createText);
-                    //        Console.WriteLine(createText);
-                    //    }
-                    //    else
-                    //    {
-                    //        string text = File.ReadAllText("./GuestBook.txt");
-                    //        Console.WriteLine(text);
-                    //        Console.Write(Environment.NewLine);
-                    //    }
-
-                    //    Console.ReadLine();
-                    //}
+                    else if (option == 4)
+                    {
+                        Console.WriteLine("Here is a list of recent theater visitors:");
+                        const string path = "guestbook.txt";
+                        if (!File.Exists(path))
+                        {
+                            string createText = "No recent visitors." + Environment.NewLine;
+                            File.WriteAllText(path, createText);
+                            Console.WriteLine(createText);
+                        }
+                        else
+                        {
+                            using (StreamWriter sw = File.AppendText(path))
+                            {
+                                sw.WriteLine($"{userName} watched {selectedMovie} at the theater");
+                            }
+                            try
+                            {
+                                using (StreamReader sr = new StreamReader(path, true))
+                                {
+                                    string line;
+                                    while ((line = sr.ReadLine()) != null)
+                                    {
+                                        Console.WriteLine(line);
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("The file could not be read:");
+                                Console.WriteLine(e.Message);
+                            }
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
+                    }
                     //Exits the program
                     else if (option == 5)
                     {
@@ -239,7 +264,7 @@ namespace PixarTheater
             var topGrossingMovies = GetTopGrossing(movies);
             foreach (var movie in topGrossingMovies)
             {
-                Console.WriteLine(movie.Title + " | Box Office Gross: " + movie.BoxOfficeGross);
+                Console.WriteLine(movie.Title + " | Box Office Gross: {0:C2}", movie.BoxOfficeGross);
             }
 
             Console.ReadLine();
