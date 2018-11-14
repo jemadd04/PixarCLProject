@@ -68,35 +68,36 @@ namespace PixarTheater
             Console.Write($"Welcome {userName}! Please choose a movie to watch from the list above: ");
             Console.Write(Environment.NewLine);
 
-            //bool nullAnswer = true;
-            //while (nullAnswer)
-            //{
-                var selectedMovie = Console.ReadLine();
-                Console.Write(Environment.NewLine);
+         
+            var selectedMovie = Console.ReadLine();
+            Console.Write(Environment.NewLine);
 
-                var movieAnswer = movies.FirstOrDefault(r => string.Equals(r.Title, selectedMovie, StringComparison.InvariantCultureIgnoreCase));
-                if (movieAnswer == null)
-                {
-                    Console.WriteLine("That is an invalid option. Please select a movie from the list.");
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine(userName + ", you have chosen to watch " + movieAnswer.Title + ". This movie came out in " + movieAnswer.Year + " and grossed " + movieAnswer.BoxOfficeGross + " at the box office!");
-                    Console.WriteLine("Also, it ended up with a Rotten Tomatoes Score of " + movieAnswer.RTScore + "%.");
-                    Console.WriteLine(Environment.NewLine);
-                    Console.WriteLine("We hope you enjoy your movie " + userName + " and please come back to visit soon. Enjoy the show!");
-                    Console.WriteLine("Press <Enter> to enter the theater");
+            var movieAnswer = movies.FirstOrDefault(r => string.Equals(r.Title, selectedMovie, StringComparison.InvariantCultureIgnoreCase));
+            if (movieAnswer == null)
+            {
+                Console.WriteLine("That is an invalid option. Please select a movie from the list.");
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine(userName + ", you have chosen to watch " + movieAnswer.Title + ". This movie came out in " + movieAnswer.Year + " and grossed {0:C2}" + " at the box office!", movieAnswer.BoxOfficeGross);
+                Console.WriteLine("Also, it ended up with a Rotten Tomatoes Score of " + movieAnswer.RTScore + "%.");
+                Console.WriteLine(Environment.NewLine);
+                Console.WriteLine("We hope you enjoy your movie " + userName + " and please come back to visit soon. Enjoy the show!");
+                Console.WriteLine("Press <Enter> to enter the theater");
 
-                }
+            }
+            // Puts written txt file into a const so that it can be easily changed if need be
+            const string path = "guestbook.txt";
 
+            // Writes the user name and movie they select into a TXT file 
+            using (StreamWriter sw = File.AppendText(path))
+            {
+                sw.WriteLine($"{userName} watched {selectedMovie} at the theater");
+            }
 
-
-                Console.ReadLine();
-                Console.Write(Environment.NewLine);
-
-            //}
-
+            Console.ReadLine();
+            Console.Write(Environment.NewLine);
 
             // Clear screen 
             Console.Clear();
@@ -126,7 +127,6 @@ namespace PixarTheater
                     // Option 1- Display all Pixar movies and choose one to watch
                     if (option == 1)
                     {
-
                         foreach (var movie in movies)
                         {
                             Console.WriteLine(movie.Title);
@@ -135,7 +135,6 @@ namespace PixarTheater
                         Console.Write(Environment.NewLine);
                         Console.ReadLine();
                         Console.Clear();
-
                     }
                     //Option 2 - Lists all Pixar movies by box office gross, highest to lowest
                     else if (option == 2)
@@ -151,7 +150,6 @@ namespace PixarTheater
                     else if (option == 4)
                     {
                         Console.WriteLine("Here is a list of recent theater visitors:");
-                        const string path = "guestbook.txt";
                         if (!File.Exists(path))
                         {
                             string createText = "No recent visitors." + Environment.NewLine;
@@ -160,10 +158,6 @@ namespace PixarTheater
                         }
                         else
                         {
-                            using (StreamWriter sw = File.AppendText(path))
-                            {
-                                sw.WriteLine($"{userName} watched {selectedMovie} at the theater");
-                            }
                             try
                             {
                                 using (StreamReader sr = new StreamReader(path, true))
@@ -184,12 +178,12 @@ namespace PixarTheater
                             Console.Clear();
                         }
                     }
-                    //Exits the program
+                    // Option 5 - Exits the program
                     else if (option == 5)
                     {
                         break;
                     }
-                    else
+                    else // Validates that a user enters an option between 1 and 5
                     {
                         Console.Write("That is not a valid option. Please choose between options 1 through 5.");
                     }
@@ -198,6 +192,7 @@ namespace PixarTheater
         } //end of Main
 
         //Methods
+        // Beginning of ReadMovieList method
         public static List<MovieData> ReadMovieList(string fileName)
         {
             var movieList = new List<MovieData>();
@@ -242,16 +237,6 @@ namespace PixarTheater
             return movies;
         } //End of DeserializeMovies()
 
-        //public static void SerializeMoviesToFile(List<MovieData> movies, string fileName)
-        //{
-        //    var serializer = new JsonSerializer();
-        //    using (var writer = new StreamWriter(fileName))
-        //    using (var jsonWriter = new JsonTextWriter(writer))
-        //    {
-        //        serializer.Serialize(jsonWriter, movies);
-        //    }
-        //}
-
         static void GetBoxOfficeGross()
         {
             string currentDirectory = Directory.GetCurrentDirectory();
@@ -273,6 +258,7 @@ namespace PixarTheater
             Console.Clear();
         } //End of GetBoxOfficeGross()
 
+        // GetRTScoreData pulls scores from JSON file
         static void GetRTScoreData()
         {
             string currentDirectory = Directory.GetCurrentDirectory();
@@ -294,6 +280,7 @@ namespace PixarTheater
             Console.Clear();
         } //End of GetRTScoreData()
 
+        // GetTopGrossing sorts list of movies in descending order by Box Office Gross
         public static List<MovieData> GetTopGrossing(List<MovieData> movies)
         {
             var topGrossingMovies = new List<MovieData>();
@@ -307,8 +294,9 @@ namespace PixarTheater
                     break;
             }
             return topGrossingMovies;
-        }
+        } // End of GetTopGrossing()
 
+        // GetTopScore method sorts list of movies in descending order by Rotten Tomatoes score
         public static List<MovieData> GetTopScore(List<MovieData> movies)
         {
             var topScoreMovies = new List<MovieData>();
@@ -322,17 +310,6 @@ namespace PixarTheater
                     break;
             }
             return topScoreMovies;
-        } // End of GetTopGrossing()
-
-    }
-}
-
-
-//// PROJECT GUIDELINES
-////1. Does project read from a dataset?
-////2. Does project have a class that models at least some of the data?
-////3. Does the above class have at least two instances, representing two seperate pieces of data?
-////4. Does project write to a database or file?
-////5. Is the user able to view or manipulate the data in any manner?
-////6. Does the project have comments?
-////7. Does the project have a README file on Github?
+        } // End of GetTopScore()
+    } // End of program
+} // End of namespace
