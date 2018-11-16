@@ -46,13 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Movie.cs" />
-    <Compile Include="MovieChoice.cs" />
-    <Compile Include="MovieComparer.cs" />
-    <Compile Include="MovieData.cs" />
+    <Compile Include="Models\Movie.cs" />
+    <Compile Include="Models\MovieChoice.cs" />
+    <Compile Include="Logic\MovieComparer.cs" />
+    <Compile Include="Models\MovieData.cs" />
+    <Compile Include="PixarTheater.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScoreComparer.cs" />
+    <Compile Include="Logic\ScoreComparer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
